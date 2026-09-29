@@ -4,9 +4,9 @@ import os
 from dotenv import load_dotenv
 
 
-# =========================================================
+#
 # CARGAR CONFIGURACIÓN DEL ARCHIVO .env
-# =========================================================
+#
 
 load_dotenv()
 
@@ -19,9 +19,9 @@ RUTA_CSV = os.path.join(RUTA_ARCHIVOS, "DIM_CLIENTE.csv")
 RUTA_BASE_DATOS = os.path.join(RUTA_DB, "datacaos_estrella.db")
 
 
-# =========================================================
+
 # 1. LEER EL ARCHIVO CSV
-# =========================================================
+
 
 # El CSV utiliza ; como separador
 clientes = pd.read_csv(
@@ -30,10 +30,9 @@ clientes = pd.read_csv(
     encoding="utf-8"
 )
 
-
-# =========================================================
+#
 # 2. CONECTAR CON LA BASE DE DATOS
-# =========================================================
+
 
 conexion = sqlite3.connect(RUTA_BASE_DATOS)
 cursor = conexion.cursor()
@@ -44,9 +43,9 @@ insertados = 0
 actualizados = 0
 
 
-# =========================================================
+
 # 3. RECORRER LOS CLIENTES
-# =========================================================
+
 
 for _, cliente in clientes.iterrows():
 
@@ -58,9 +57,9 @@ for _, cliente in clientes.iterrows():
     segmento = cliente["SegmentoCliente"]
 
 
-    # =====================================================
+  
     # 4. BUSCAR SI EL CLIENTE YA EXISTE
-    # =====================================================
+ 
 
     cursor.execute(
         """
@@ -79,10 +78,9 @@ for _, cliente in clientes.iterrows():
     cliente_existente = cursor.fetchone()
 
 
-    # =====================================================
+  
     # 5. SI NO EXISTE, INSERTAR
-    # =====================================================
-
+   
     if cliente_existente is None:
 
         cursor.execute(
@@ -111,9 +109,9 @@ for _, cliente in clientes.iterrows():
         insertados += 1
 
 
-    # =====================================================
+
     # 6. SI EXISTE, COMPARAR LOS DATOS
-    # =====================================================
+  
 
     else:
 
@@ -152,17 +150,17 @@ for _, cliente in clientes.iterrows():
             actualizados += 1
 
 
-# =========================================================
+#
 # 7. GUARDAR CAMBIOS
-# =========================================================
+#
 
 conexion.commit()
 conexion.close()
 
 
-# =========================================================
+#
 # 8. MOSTRAR RESULTADO
-# =========================================================
+#
 
 print("======================================")
 print("       PIPELINE DE CLIENTES")

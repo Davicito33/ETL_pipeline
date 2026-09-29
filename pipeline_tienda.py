@@ -4,9 +4,10 @@ import os
 from dotenv import load_dotenv
 
 
-# =========================================================
+
 # CARGAR CONFIGURACIÓN DEL ARCHIVO .env
-# =========================================================
+
+
 
 load_dotenv()
 
@@ -19,9 +20,9 @@ RUTA_CSV = os.path.join(RUTA_ARCHIVOS, "DIM_TIENDA.csv")
 RUTA_BASE_DATOS = os.path.join(RUTA_DB, "datacaos_estrella.db")
 
 
-# =========================================================
+
 # 1. LEER EL ARCHIVO CSV
-# =========================================================
+
 
 tiendas = pd.read_csv(
     RUTA_CSV,
@@ -30,9 +31,9 @@ tiendas = pd.read_csv(
 )
 
 
-# =========================================================
+
 # 2. CONECTAR CON LA BASE DE DATOS
-# =========================================================
+
 
 conexion = sqlite3.connect(RUTA_BASE_DATOS)
 cursor = conexion.cursor()
@@ -43,9 +44,9 @@ insertados = 0
 actualizados = 0
 
 
-# =========================================================
+
 # 3. RECORRER LAS TIENDAS
-# =========================================================
+
 
 for _, tienda in tiendas.iterrows():
 
@@ -56,9 +57,9 @@ for _, tienda in tiendas.iterrows():
     fecha_apertura = tienda["FechaApertura"]
 
 
-    # =====================================================
+    
     # 4. BUSCAR SI LA TIENDA YA EXISTE
-    # =====================================================
+   
 
     cursor.execute(
         """
@@ -75,10 +76,9 @@ for _, tienda in tiendas.iterrows():
 
     tienda_existente = cursor.fetchone()
 
-
-    # =====================================================
+#
     # 5. SI NO EXISTE, INSERTAR
-    # =====================================================
+   
 
     if tienda_existente is None:
 
@@ -106,9 +106,9 @@ for _, tienda in tiendas.iterrows():
         insertados += 1
 
 
-    # =====================================================
+   
     # 6. SI EXISTE, COMPARAR
-    # =====================================================
+    
 
     else:
 
@@ -144,17 +144,17 @@ for _, tienda in tiendas.iterrows():
             actualizados += 1
 
 
-# =========================================================
+
 # 7. GUARDAR CAMBIOS
-# =========================================================
+
 
 conexion.commit()
 conexion.close()
 
 
-# =========================================================
+
 # 8. MOSTRAR RESULTADO
-# =========================================================
+
 
 print("======================================")
 print("       PIPELINE DE TIENDAS")

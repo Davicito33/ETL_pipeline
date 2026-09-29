@@ -4,9 +4,9 @@ import os
 from dotenv import load_dotenv
 
 
-# =========================================================
+
 # CARGAR CONFIGURACIÓN DEL ARCHIVO .env
-# =========================================================
+
 
 load_dotenv()
 
@@ -18,10 +18,9 @@ RUTA_DB = os.getenv("RUTA_DB")
 RUTA_CSV = os.path.join(RUTA_ARCHIVOS, "DIM_PRODUCTO.csv")
 RUTA_BASE_DATOS = os.path.join(RUTA_DB, "datacaos_estrella.db")
 
-
-# =========================================================
+#
 # 1. LEER EL ARCHIVO CSV
-# =========================================================
+
 
 productos = pd.read_csv(
     RUTA_CSV,
@@ -30,9 +29,9 @@ productos = pd.read_csv(
 )
 
 
-# =========================================================
+
 # 2. LIMPIAR LOS DATOS
-# =========================================================
+
 
 columnas_texto = [
     "ProductoID",
@@ -58,9 +57,9 @@ productos["PrecioListado"] = pd.to_numeric(
 )
 
 
-# =========================================================
+
 # 3. CONECTAR CON LA BASE DE DATOS
-# =========================================================
+
 
 conexion = sqlite3.connect(RUTA_BASE_DATOS)
 cursor = conexion.cursor()
@@ -71,9 +70,9 @@ insertados = 0
 actualizados = 0
 
 
-# =========================================================
+
 # 4. RECORRER LOS PRODUCTOS
-# =========================================================
+
 
 for _, producto in productos.iterrows():
 
@@ -86,9 +85,9 @@ for _, producto in productos.iterrows():
     precio = producto["PrecioListado"]
 
 
-    # =====================================================
+    
     # 5. BUSCAR SI EL PRODUCTO YA EXISTE
-    # =====================================================
+    
 
     cursor.execute(
         """
@@ -108,9 +107,9 @@ for _, producto in productos.iterrows():
     producto_existente = cursor.fetchone()
 
 
-    # =====================================================
+    
     # 6. SI NO EXISTE, INSERTAR
-    # =====================================================
+   
 
     if producto_existente is None:
 
@@ -142,9 +141,9 @@ for _, producto in productos.iterrows():
         insertados += 1
 
 
-    # =====================================================
+    
     # 7. SI EXISTE, COMPARAR
-    # =====================================================
+    
 
     else:
 
@@ -186,17 +185,17 @@ for _, producto in productos.iterrows():
             actualizados += 1
 
 
-# =========================================================
+
 # 8. GUARDAR CAMBIOS
-# =========================================================
+
 
 conexion.commit()
 conexion.close()
 
 
-# =========================================================
+
 # 9. MOSTRAR RESULTADO
-# =========================================================
+
 
 print("======================================")
 print("       PIPELINE DE PRODUCTOS")
