@@ -1,5 +1,5 @@
 import pandas as pd
-import sqlite3
+import mysql.connector
 import os
 from dotenv import load_dotenv
 
@@ -12,12 +12,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 RUTA_ARCHIVOS = os.getenv("RUTA_ARCHIVOS")
-RUTA_DB = os.getenv("RUTA_DB")
 
 
 # Crear las rutas completas
 RUTA_CSV = os.path.join(RUTA_ARCHIVOS, "DIM_TIENDA.csv")
-RUTA_BASE_DATOS = os.path.join(RUTA_DB, "datacaos_estrella.db")
+
 
 
 
@@ -35,7 +34,14 @@ tiendas = pd.read_csv(
 # 2. CONECTAR CON LA BASE DE DATOS
 
 
-conexion = sqlite3.connect(RUTA_BASE_DATOS)
+conexion = mysql.connector.connect(
+    host=os.getenv("MYSQL_HOST"),
+    port=int(os.getenv("MYSQL_PORT")),
+    database=os.getenv("MYSQL_DATABASE"),
+    user=os.getenv("MYSQL_USER"),
+    password=os.getenv("MYSQL_PASSWORD")
+)
+
 cursor = conexion.cursor()
 
 
@@ -69,7 +75,7 @@ for _, tienda in tiendas.iterrows():
             Region,
             FechaApertura
         FROM DimTienda
-        WHERE TiendaID = ?
+        WHERE TiendaID = %s
         """,
         (tienda_id,)
     )
@@ -92,7 +98,7 @@ for _, tienda in tiendas.iterrows():
                 Region,
                 FechaApertura
             )
-            VALUES (?, ?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s, %s)
             """,
             (
                 tienda_id,
@@ -126,11 +132,11 @@ for _, tienda in tiendas.iterrows():
                 """
                 UPDATE DimTienda
                 SET
-                    NombreTienda = ?,
-                    Ciudad = ?,
-                    Region = ?,
-                    FechaApertura = ?
-                WHERE TiendaID = ?
+                    NombreTienda = %s,
+                    Ciudad = %s,
+                    Region = %s,
+                    FechaApertura = %s
+                WHERE TiendaID = %s
                 """,
                 (
                     nombre,

@@ -1,5 +1,5 @@
 import pandas as pd
-import sqlite3
+import mysql.connector
 import os
 from dotenv import load_dotenv
 
@@ -16,7 +16,7 @@ RUTA_DB = os.getenv("RUTA_DB")
 
 # Crear las rutas completas
 RUTA_CSV = os.path.join(RUTA_ARCHIVOS, "DIM_CLIENTE.csv")
-RUTA_BASE_DATOS = os.path.join(RUTA_DB, "datacaos_estrella.db")
+
 
 
 
@@ -34,7 +34,14 @@ clientes = pd.read_csv(
 # 2. CONECTAR CON LA BASE DE DATOS
 
 
-conexion = sqlite3.connect(RUTA_BASE_DATOS)
+conexion = mysql.connector.connect(
+    host=os.getenv("MYSQL_HOST"),
+    port=int(os.getenv("MYSQL_PORT")),
+    database=os.getenv("MYSQL_DATABASE"),
+    user=os.getenv("MYSQL_USER"),
+    password=os.getenv("MYSQL_PASSWORD")
+)
+
 cursor = conexion.cursor()
 
 
@@ -70,7 +77,7 @@ for _, cliente in clientes.iterrows():
             Ciudad,
             SegmentoCliente
         FROM DimCliente
-        WHERE ClienteID = ?
+        WHERE ClienteID = %s
         """,
         (cliente_id,)
     )
@@ -94,7 +101,7 @@ for _, cliente in clientes.iterrows():
                 Ciudad,
                 SegmentoCliente
             )
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s, %s, %s)
             """,
             (
                 cliente_id,
@@ -130,12 +137,12 @@ for _, cliente in clientes.iterrows():
                 """
                 UPDATE DimCliente
                 SET
-                    NombreCliente = ?,
-                    Genero = ?,
-                    RangoEdad = ?,
-                    Ciudad = ?,
-                    SegmentoCliente = ?
-                WHERE ClienteID = ?
+                    NombreCliente = %s,
+                    Genero = %s,
+                    RangoEdad = %s,
+                    Ciudad = %s,
+                    SegmentoCliente = %s
+                WHERE ClienteID = %s
                 """,
                 (
                     nombre,
