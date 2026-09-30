@@ -4,9 +4,9 @@ import os
 from dotenv import load_dotenv
 
 
-#
+
 # CARGAR CONFIGURACIÓN DEL ARCHIVO .env
-#
+
 
 load_dotenv()
 
@@ -23,15 +23,15 @@ RUTA_CSV = os.path.join(RUTA_ARCHIVOS, "DIM_CLIENTE.csv")
 # 1. LEER EL ARCHIVO CSV
 
 
-# El CSV utiliza ; como separador
+
 clientes = pd.read_csv(
     RUTA_CSV,
     sep=";",
     encoding="utf-8"
 )
 
-#
-# 2. CONECTAR CON LA BASE DE DATOS
+
+
 
 
 conexion = mysql.connector.connect(
@@ -51,7 +51,7 @@ actualizados = 0
 
 
 
-# 3. RECORRER LOS CLIENTES
+
 
 
 for _, cliente in clientes.iterrows():
@@ -64,8 +64,7 @@ for _, cliente in clientes.iterrows():
     segmento = cliente["SegmentoCliente"]
 
 
-  
-    # 4. BUSCAR SI EL CLIENTE YA EXISTE
+
  
 
     cursor.execute(
@@ -86,7 +85,7 @@ for _, cliente in clientes.iterrows():
 
 
   
-    # 5. SI NO EXISTE, INSERTAR
+  
    
     if cliente_existente is None:
 
@@ -114,10 +113,6 @@ for _, cliente in clientes.iterrows():
         )
 
         insertados += 1
-
-
-
-    # 6. SI EXISTE, COMPARAR LOS DATOS
   
 
     else:

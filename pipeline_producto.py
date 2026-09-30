@@ -58,7 +58,6 @@ productos["PrecioListado"] = pd.to_numeric(
 
 
 
-# 3. CONECTAR CON LA BASE DE DATOS
 
 
 conexion = mysql.connector.connect(
@@ -78,7 +77,7 @@ actualizados = 0
 
 
 
-# 4. RECORRER LOS PRODUCTOS
+
 
 
 for _, producto in productos.iterrows():
@@ -115,7 +114,7 @@ for _, producto in productos.iterrows():
 
 
     
-    # 6. SI NO EXISTE, INSERTAR
+
    
 
     if producto_existente is None:
@@ -147,9 +146,6 @@ for _, producto in productos.iterrows():
 
         insertados += 1
 
-
-    
-    # 7. SI EXISTE, COMPARAR
     
 
     else:
